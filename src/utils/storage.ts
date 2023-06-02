@@ -9,6 +9,6 @@ export function getTasks(): Task[] {
   return JSON.parse(tasks);
 }
 
-export function setTasks(tasks: Task[]): void {
+export function saveTasks(tasks: Task[]): void {
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(tasks));
 }

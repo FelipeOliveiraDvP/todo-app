@@ -3,7 +3,11 @@ import { Button, InputGroup, Form as BSForm } from "react-bootstrap";
 import * as Yup from "yup";
 import { CreateTask } from "../types";
 
-export function TaskForm() {
+interface Props {
+  onCreate: (obj: CreateTask) => void;
+}
+
+export function TaskForm({ onCreate }: Props) {
   const formik = useFormik<CreateTask>({
     initialValues: {
       name: "",
@@ -11,13 +15,18 @@ export function TaskForm() {
     validationSchema: Yup.object({
       name: Yup.string().required("Informe um nome para a tarefa"),
     }),
-    onSubmit(values) {
-      console.log(values);
+    onSubmit(values, { resetForm }) {
+      onCreate(values);
+      resetForm();
     },
   });
 
   return (
-    <form onSubmit={formik.handleSubmit}>
+    <form
+      onSubmit={(values) => {
+        formik.handleSubmit(values);
+      }}
+    >
       <InputGroup className="my-3">
         <BSForm.Control
           name="name"
