@@ -3,3 +3,7 @@ export interface Task {
   name: string;
   done: boolean;
 }
+
+export interface CreateTask {
+  name: string;
+}
