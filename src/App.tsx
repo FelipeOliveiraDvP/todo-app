@@ -5,20 +5,31 @@ import { TaskItem } from "./components/TaskItem";
 import { TaskForm } from "./components/TaskForm";
 import { CreateTask, Task } from "./types";
 import { getTasks, saveTasks } from "./utils/storage";
-import { createTask } from "./services";
+import { createTask, updateTask } from "./services";
 
 function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
 
   function handleCreateTask(obj: CreateTask) {
-    const newTasks = createTask(tasks, obj);
+    commitTasks(createTask(tasks, obj));
+  }
 
-    saveTasks(newTasks);
-    setTasks(newTasks);
+  function handleMarkAsDone(task: Task) {
+    commitTasks(updateTask(tasks, task));
+    refreshTasks();
+  }
+
+  function commitTasks(tasks: Task[]) {
+    saveTasks(tasks);
+    setTasks(tasks);
+  }
+
+  function refreshTasks() {
+    setTasks(getTasks());
   }
 
   useEffect(() => {
-    setTasks(getTasks());
+    refreshTasks();
 
     return () => setTasks([]);
   }, []);
@@ -34,7 +45,11 @@ function App() {
           <TaskForm onCreate={handleCreateTask} />
           <Stack gap={3}>
             {tasks.map((task) => (
-              <TaskItem key={task.id} task={task} />
+              <TaskItem
+                key={task.id}
+                task={task}
+                onMarkAsDone={handleMarkAsDone}
+              />
             ))}
           </Stack>
         </Card.Body>
